@@ -19,7 +19,7 @@ from Cython.Build import cythonize
 #       for the library on the system.
 # Note: Building GPL demosaic packs only works with libraw <= 0.18.
 #       See https://github.com/letmaik/rawpy/issues/72.
-buildGPLCode = os.getenv('RAWPY_BUILD_GPL_CODE') == '1'
+buildGPLCode = False #os.getenv('RAWPY_BUILD_GPL_CODE') == '1'
 useSystemLibraw = os.getenv('RAWPY_USE_SYSTEM_LIBRAW') == '1'
 
 # don't treat mingw as Windows (https://stackoverflow.com/a/51200002)
@@ -82,18 +82,22 @@ def use_pkg_config():
 # A possible work-around could be to statically link against libraw.
 
 if (isWindows or isMac) and not useSystemLibraw:
-    external_dir = os.path.abspath('external')
+    print("WINDOWS: Using already compiled LibRaw, inside conda's env.")
+    external_dir = os.path.abspath('C:/Users/stama/OneDrive/Documents/GitHub')
     libraw_dir = os.path.join(external_dir, 'LibRaw')
-    cmake_build = os.path.join(external_dir, 'LibRaw-cmake', 'build')
-    install_dir = os.path.join(cmake_build, 'install')
+    cmake_build = os.path.join(external_dir, 'LibRaw', 'build')
+    install_dir = os.path.abspath('C:/Users/stama/miniconda3/envs/amechanos')
     
     include_dirs += [os.path.join(install_dir, 'include', 'libraw')]
     library_dirs += [os.path.join(install_dir, 'lib')]
     libraries = ['raw_r']
+    print(f'cmake_build dir is {cmake_build}')
+    print(f'install_dir dir is {install_dir}')
     
     # for Windows and Mac we use cmake, so libraw_config.h will always exist
     libraw_config_found = True
 else:
+    print("ELSE: Using .")
     use_pkg_config()
     
     # check if libraw_config.h exists
